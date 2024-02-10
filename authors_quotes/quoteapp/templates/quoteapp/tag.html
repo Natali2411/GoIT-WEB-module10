@@ -1,0 +1,18 @@
+{% extends "quoteapp/base.html" %}
+
+{% block content %}
+
+<form method="POST" action="{% url 'quoteapp:tag' %}">
+    {% csrf_token %}
+    <div class="form-group">
+    <label for="tag_name">Tag Name</label>
+    <input type="text" class="form-control" id="tag_name"
+           aria-describedby="tagHelp" placeholder="Tag Name" name="name">
+  </div>
+    <div class="grid">
+      <button type="submit" class="btn btn-primary">Submit</button>
+      <button type="reset" class="btn btn-primary">Reset</button>
+    </div>
+</form>
+
+{% endblock %}
