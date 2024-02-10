@@ -63,8 +63,7 @@ def write_to_db(authors_file_path: str, quotes_file_path: str) -> None:
     # Add quotes
     for instance in quotes_file_objects:
         row_data = instance
-        author = Author.objects.get(fullname=row_data["author"])
-        print(f"Found author: {author.fullname}")
+        author = Author.objects.get(fullname=row_data["fullname"])
         if author:
             tags = []
             for tag_name in row_data["tags"]:
@@ -78,7 +77,7 @@ def write_to_db(authors_file_path: str, quotes_file_path: str) -> None:
                         Tag.objects.get(name=tag_name)
                     )
             try:
-                row_data.pop("author")
+                row_data.pop("fullname")
                 row_data.pop("tags")
                 quote = Quote.objects.create(**row_data)
                 quote.tags.add(*tags)
@@ -87,7 +86,3 @@ def write_to_db(authors_file_path: str, quotes_file_path: str) -> None:
             except django.db.utils.IntegrityError as err:
                 print(f"The quote with the text '{row_data['quote']}' already exists, "
                       f"stacktrace err: '{err}'")
-
-
-if __name__ == "__main__":
-    write_to_db("data/authors.json", "data/quotes.json")

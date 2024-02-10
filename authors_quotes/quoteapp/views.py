@@ -100,6 +100,6 @@ def scrape_info(request):
         messages.warning(request, f"Scraping was interrupted due to errors: {str(err)}")
     else:
         messages.success(request, "Scraping completed successfully")
-    # finally:
-    #     FileInteraction.delete_folder(folder_path="authors_quotes/data/")
+    finally:
+        FileInteraction.delete_folder(folder_path="data")
     return redirect(to="quoteapp:quotes")
