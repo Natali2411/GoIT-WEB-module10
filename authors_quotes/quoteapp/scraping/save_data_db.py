@@ -1,3 +1,4 @@
+import pathlib
 import shutil
 from datetime import datetime
 
@@ -40,7 +41,9 @@ class FileInteraction:
 
         :param folder_path:
         """
-        shutil.rmtree(folder_path)
+        path = pathlib.Path(folder_path)
+        if path.exists():
+            shutil.rmtree(path)
 
 
 def write_to_db(authors_file_path: str, quotes_file_path: str) -> None:
@@ -48,25 +51,27 @@ def write_to_db(authors_file_path: str, quotes_file_path: str) -> None:
     authors_file_objects = FileInteraction.read_info(authors_file_path)
     quotes_file_objects = FileInteraction.read_info(quotes_file_path)
     for instance in authors_file_objects:
-        row_data = instance
-        born_date: datetime = datetime.strptime(row_data["born_date"], "%B %d, %Y")
+        author_data = instance
+        born_date: datetime = datetime.strptime(author_data["born_date"], "%B %d, %Y")
         born_date_fmt: str = datetime.strftime(born_date, "%Y-%m-%d")
-        row_data["born_date"] = born_date_fmt
+        author_data["born_date"] = born_date_fmt
         try:
-            Author.objects.create(**row_data)
+            Author.objects.create(**author_data)
         except django.db.utils.IntegrityError as err:
             print(
-                f"The author with the name '{row_data['fullname']}' already "
+                f"The author with the name '{author_data['fullname']}' already "
                 f"exist in the collection, stacktrace err: '{err}'"
             )
 
     # Add quotes
     for instance in quotes_file_objects:
-        row_data = instance
-        author = Author.objects.get(fullname=row_data["fullname"])
+        quote_data = instance
+        print("Quote data from file")
+        print(quote_data)
+        author = Author.objects.get(fullname=quote_data["author"])
         if author:
             tags = []
-            for tag_name in row_data["tags"]:
+            for tag_name in quote_data["tags"]:
                 try:
                     tag = Tag.objects.create(name=tag_name)
                     tags.append(tag)
@@ -77,12 +82,12 @@ def write_to_db(authors_file_path: str, quotes_file_path: str) -> None:
                         Tag.objects.get(name=tag_name)
                     )
             try:
-                row_data.pop("fullname")
-                row_data.pop("tags")
-                quote = Quote.objects.create(**row_data)
+                quote_data.pop("fullname")
+                quote_data.pop("tags")
+                quote = Quote.objects.create(**quote_data)
                 quote.tags.add(*tags)
                 quote.author = author
                 quote.save()
             except django.db.utils.IntegrityError as err:
-                print(f"The quote with the text '{row_data['quote']}' already exists, "
+                print(f"The quote with the text '{quote_data['quote']}' already exists, "
                       f"stacktrace err: '{err}'")

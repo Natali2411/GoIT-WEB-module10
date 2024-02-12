@@ -8,21 +8,25 @@
     <label for="authorFullName">Full name</label>
     <input type="text" class="form-control" id="authorFullName"
            aria-describedby="nameHelp" placeholder="Full name" name="fullname">
+    <span>{{ form.errors.fullname }}</span>
   </div>
   <div class="form-group">
     <label for="bornLocalion">Born Location</label>
     <input type="text" class="form-control" id="bornLocalion"
            placeholder="Born Location" name="born_location">
+    <span>{{ form.errors.born_location }}</span>
   </div>
   <div class="form-group">
     <label for="bornDate">Born Date</label>
     <input type="date" class="form-control" id="bornDate"
            placeholder="Born Date" name="born_date">
+    <span>{{ form.errors.born_date }}</span>
   </div>
   <div class="form-group">
     <label for="description">Description</label>
     <input type="text" class="form-control" id="description"
            placeholder="Description" name="description">
+    <span>{{ form.errors.description }}</span>
   </div>
   <button type="submit" class="btn btn-primary">Submit</button>
   <button type="reset" class="btn btn-primary">Reset</button>

@@ -1,3 +1,5 @@
+import time
+
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.shortcuts import render, redirect, get_object_or_404
@@ -97,9 +99,8 @@ def scrape_info(request):
         write_to_db(authors_file_path="data/authors.json",
                     quotes_file_path="data/quotes.json")
     except Exception as err:
-        messages.warning(request, f"Scraping was interrupted due to errors: {str(err)}")
+        message = f"Scraping ended up with the error '{err}'"
     else:
-        messages.success(request, "Scraping completed successfully")
-    finally:
-        FileInteraction.delete_folder(folder_path="data")
-    return redirect(to="quoteapp:quotes")
+        message = "Your data has been scraped successfully!"
+    FileInteraction.delete_folder(folder_path="data")
+    return render(request, "quoteapp/index.html", {"message": message})

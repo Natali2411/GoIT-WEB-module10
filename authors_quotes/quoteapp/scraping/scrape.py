@@ -6,13 +6,13 @@ from scrapy.utils.project import get_project_settings
 from .author import AuthorSpider
 from .quote import QuotesSpider
 
-settings = get_project_settings()
-configure_logging(settings)
-runner = CrawlerRunner(settings)
 
 
 @defer.inlineCallbacks
 def crawl():
+    settings = get_project_settings()
+    configure_logging(settings)
+    runner = CrawlerRunner(settings)
     try:
         yield runner.crawl(QuotesSpider)
         yield runner.crawl(AuthorSpider)
